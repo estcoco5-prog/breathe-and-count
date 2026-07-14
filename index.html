@@ -1,0 +1,142 @@
+<meta charset="utf-8">
+<title>Breathe &amp; Count</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Breathe & Count">
+<meta name="theme-color" content="#F3F1EA">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="stylesheet" href="css/styles.css">
+
+<div class="page-head">
+  <div class="eyebrow">Personal app</div>
+  <h1>Breathe &amp; Count</h1>
+  <p>Running in a browser tab for testing. On your iPhone, add it to the Home Screen to use it full-screen and offline.</p>
+</div>
+
+<div class="phone">
+  <div class="island"></div>
+  <div class="statusbar">
+    <div>9:41</div>
+    <div class="dots">
+      <div class="bars"><i></i><i></i><i></i><i></i></div>
+      <span style="font-size:11px">5G</span>
+      <div class="batt"></div>
+    </div>
+  </div>
+
+  <div class="screen">
+
+    <!-- COUNT -->
+    <section class="view active" id="v-count">
+      <div class="greet">
+        <div class="hello" id="greetLine">Good evening</div>
+        <div class="date" id="greetDate">Today</div>
+      </div>
+      <div id="counterList"></div>
+      <button class="add-btn" id="addBtn">+  New counter</button>
+    </section>
+
+    <!-- STATS -->
+    <section class="view" id="v-stats">
+      <div class="backbar">
+        <button id="statsBack">‹ Count</button>
+        <h2 id="statsName">Pushups</h2>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-tile"><div class="k" id="stStreakK">Streak</div><div class="v" id="stStreak">0 <small>days</small></div></div>
+        <div class="stat-tile"><div class="k" id="stTotalK">All-time total</div><div class="v" id="stTotal">0</div></div>
+      </div>
+      <div class="seg">
+        <button class="on" id="segWeek">Weekly</button>
+        <button id="segMonth">Monthly</button>
+      </div>
+      <div class="chart-card">
+        <div class="ct" id="chartTitle">This week</div>
+        <div class="bars" id="chartBars"></div>
+      </div>
+    </section>
+
+    <!-- BREATHE -->
+    <section class="view" id="v-breathe">
+      <div class="bh">
+        <div class="hello">Take a moment</div>
+        <div class="date">Choose a pattern and breathe</div>
+      </div>
+      <div class="section-label">Patterns</div>
+      <div class="chips" id="patternChips"></div>
+      <div class="dur-row" id="customRow" style="display:none">
+        <label class="cinp">In<input id="cin" type="number" min="0" value="4"></label>
+        <label class="cinp">Hold<input id="ch1" type="number" min="0" value="2"></label>
+        <label class="cinp">Out<input id="cout" type="number" min="0" value="6"></label>
+        <label class="cinp">Hold<input id="ch2" type="number" min="0" value="0"></label>
+      </div>
+      <div class="section-label">Length</div>
+      <div class="dur-row" id="durRow">
+        <button class="dur sel" data-min="2">2 min</button>
+        <button class="dur" data-min="5">5 min</button>
+        <button class="dur" data-min="10">10 min</button>
+        <button class="dur" data-rounds="6">6 rounds</button>
+      </div>
+      <button class="start" id="startBtn">Begin breathing</button>
+    </section>
+
+    <!-- SESSION -->
+    <div class="session" id="session">
+      <div class="breathe-wrap">
+        <svg class="prog" viewBox="0 0 280 280"><circle class="prog-track" cx="140" cy="140" r="132"></circle><circle class="prog-fill" id="progFill" cx="140" cy="140" r="132"></circle></svg>
+        <div class="circle" id="circle"></div>
+        <div class="phase"><div class="pw" id="phaseWord">Breathe in</div><div class="pc" id="phaseCount">4</div></div>
+      </div>
+      <div class="sess-meta">
+        <div class="nm" id="sessName">Box breathing</div>
+        <div class="tm" id="sessTime">2:00 left</div>
+      </div>
+      <div class="sess-ctrl">
+        <button id="pauseBtn">Pause</button>
+        <button class="stop" id="stopBtn">End</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tabbar">
+    <button class="tab count-tab on" data-tab="count">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>
+      <span>Count</span>
+    </button>
+    <button class="tab breathe-tab" data-tab="breathe">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="9" opacity=".5"/></svg>
+      <span>Breathe</span>
+    </button>
+  </div>
+</div>
+
+<p class="hint">Your counts and breathing history are saved <b>only on this device</b>. Nothing is uploaded.</p>
+
+<dialog id="counterDialog" class="sheet">
+  <form method="dialog">
+    <h3>Counter</h3>
+    <label>Name<input name="name" maxlength="24" required></label>
+    <label>Type
+      <select name="kind">
+        <option value="good">Good habit (build up)</option>
+        <option value="bad">Cutting down (limit)</option>
+      </select>
+    </label>
+    <label id="targetLabel">Daily goal (optional)<input name="target" type="number" min="0" inputmode="numeric"></label>
+    <menu>
+      <button value="cancel" type="submit" class="btn-ghost" formnovalidate>Cancel</button>
+      <button value="save" type="submit" class="btn-primary">Save</button>
+    </menu>
+    <button type="button" id="deleteBtn" class="btn-danger">Delete counter</button>
+  </form>
+</dialog>
+
+<script type="module" src="js/app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => navigator.serviceWorker.register('service-worker.js').catch(() => {}));
+  }
+</script>

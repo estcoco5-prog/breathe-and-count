@@ -1,0 +1,11 @@
+{
+  "name": "breathe-and-count",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Private offline iPhone PWA: activity counters + breathwork timer",
+  "scripts": {
+    "test": "node --test",
+    "serve": "python -m http.server 8080"
+  }
+}

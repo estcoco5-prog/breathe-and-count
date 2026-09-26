@@ -36,26 +36,44 @@
       </div>
       <div id="counterList"></div>
       <button class="add-btn" id="addBtn">+  New counter</button>
-      <a class="edit-link" href="backup.html" style="display:block;text-align:center;margin-top:16px;padding:8px;text-decoration:none">Backup &amp; restore</a>
+      <button class="panel-btn" id="backupLink"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="M7.5 10.5L12 15l4.5-4.5"/><path d="M4.5 19.5h15"/></svg>Back up my data</button>
+    </section>
+
+    <!-- TARGET -->
+    <section class="view" id="v-target">
+      <div class="greet">
+        <div class="hello">Day by day</div>
+        <div class="date" id="targetDate">Today</div>
+      </div>
+      <div id="targetToday"></div>
+      <div id="targetList"></div>
+      <button class="add-btn" id="addTargetBtn">+  New target</button>
+      <button class="panel-btn" id="backupLink2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="M7.5 10.5L12 15l4.5-4.5"/><path d="M4.5 19.5h15"/></svg>Back up my data</button>
     </section>
 
     <!-- STATS -->
     <section class="view" id="v-stats">
       <div class="backbar">
-        <button id="statsBack">‹ Count</button>
+        <button id="statsBack">‹ Back</button>
         <h2 id="statsName">Pushups</h2>
       </div>
-      <div class="stat-grid">
-        <div class="stat-tile"><div class="k" id="stStreakK">Streak</div><div class="v" id="stStreak">0 <small>days</small></div></div>
-        <div class="stat-tile"><div class="k" id="stTotalK">All-time total</div><div class="v" id="stTotal">0</div></div>
-      </div>
+      <div id="statsHero"></div>
+      <div class="chip-row" id="statsChips"></div>
       <div class="seg">
-        <button class="on" id="segWeek">Weekly</button>
-        <button id="segMonth">Monthly</button>
+        <button class="on" id="segWeek">This week</button>
+        <button id="segMonth">Last 30 days</button>
       </div>
       <div class="chart-card">
         <div class="ct" id="chartTitle">This week</div>
-        <div class="bars" id="chartBars"></div>
+        <div class="chart-wrap" id="chartWrap">
+          <div class="bars" id="chartBars"></div>
+        </div>
+        <div id="chartLabels"></div>
+        <div id="chartLegend"></div>
+      </div>
+      <div class="chart-card" id="runsCard" hidden style="margin-top:12px">
+        <div class="ct" id="runsTitle">Your longest runs</div>
+        <div id="runsList"></div>
       </div>
     </section>
 
@@ -104,11 +122,15 @@
 
   <div class="tabbar">
     <button class="tab count-tab on" data-tab="count">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5.5v13M12 5.5v13M17 5.5v13"/><path d="M4.5 17.5L19.5 6"/></svg>
       <span>Count</span>
     </button>
+    <button class="tab target-tab" data-tab="target">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2.8 19.2h18.4"/><path d="M4.6 19.2l5-9 3.1 4.9 2.3-3.5 4.4 7.6"/><circle cx="9.6" cy="10.2" r="1.7" fill="currentColor" stroke="none"/></svg>
+      <span>Target</span>
+    </button>
     <button class="tab breathe-tab" data-tab="breathe">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="9" opacity=".5"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 16.5a9.5 9.5 0 0 1 19 0"/><path d="M7 16.5a5 5 0 0 1 10 0"/><circle cx="12" cy="16.5" r="1.8" fill="currentColor" stroke="none"/></svg>
       <span>Breathe</span>
     </button>
   </div>
@@ -118,21 +140,49 @@
 
 <dialog id="counterDialog" class="sheet">
   <form method="dialog">
-    <h3>Counter</h3>
+    <h3 id="dialogTitle">Counter</h3>
     <label>Name<input name="name" maxlength="24" required></label>
     <label>Type
       <select name="kind">
-        <option value="good">Good habit (build up)</option>
-        <option value="bad">Cutting down (limit)</option>
+        <option value="good">Count — good habit</option>
+        <option value="bad">Count — cutting down</option>
+        <option value="build">Target — build momentum</option>
+        <option value="avoid">Target — will not do</option>
       </select>
     </label>
     <label id="targetLabel">Daily goal (optional)<input name="target" type="number" min="0" inputmode="numeric"></label>
+    <div class="convert-note" id="convertNote" hidden>
+      <div class="h">Your history comes with it</div>
+      <div class="lbl" id="convBeforeLbl">Before · as a count</div>
+      <div class="row" id="convBefore"></div>
+      <div class="lbl" id="convAfterLbl">After</div>
+      <div class="row" id="convAfter"></div>
+      <div class="b" id="convText"></div>
+    </div>
     <menu>
       <button value="cancel" type="submit" class="btn-ghost" formnovalidate>Cancel</button>
       <button value="save" type="submit" class="btn-primary">Save</button>
     </menu>
     <button type="button" id="deleteBtn" class="btn-danger">Delete counter</button>
   </form>
+</dialog>
+
+<dialog id="backupDialog" class="sheet">
+  <h3>Backup &amp; restore</h3>
+  <div class="note">Copy this and paste it somewhere that is yours — Notes, or a message to yourself. It is everything: every counter, every target, every day.</div>
+  <textarea id="exportBox" readonly spellcheck="false"></textarea>
+  <menu>
+    <button type="button" class="btn-primary" id="copyBtn">Copy all</button>
+    <a class="dl" id="downloadBtn" download="breathe-and-count-backup.json">Save as a file</a>
+  </menu>
+  <div class="said" id="backupSaid"></div>
+  <div class="note" style="margin-top:16px"><b>Restore</b> — paste a backup below. This replaces everything currently on this device.</div>
+  <textarea id="importBox" spellcheck="false" placeholder="Paste your backup here"></textarea>
+  <menu>
+    <button type="button" class="btn-ghost" id="closeBackup">Close</button>
+    <button type="button" class="btn-danger" id="restoreBtn" style="width:auto;margin:0;flex:1">Restore</button>
+  </menu>
+  <div class="said" id="restoreSaid"></div>
 </dialog>
 
 <script type="module" src="js/app.js"></script>

@@ -1,4 +1,4 @@
-const CACHE = 'breathe-count-v2';
+const CACHE = 'breathe-count-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -10,6 +10,9 @@ const ASSETS = [
   './js/breathing.js',
   './js/breathe-ui.js',
   './js/stats.js',
+  './js/grid.js',
+  './js/targets.js',
+  './js/backup.js',
   './manifest.webmanifest',
   './icons/icon-180.png',
   './icons/icon-192.png',

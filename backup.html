@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Breathe &amp; Count — your saved data</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F3F1EA">
+<style>
+  :root{
+    --bg:#E7E4DB; --surface:#FCFBF7; --surface-2:#F0EDE4;
+    --ink:#23282A; --ink-soft:#4F5553; --ink-faint:#9AA09C; --line:#E4E0D5;
+    --spruce:#2F5F58; --mist-soft:#E4F0EB; --honey:#8A5E17; --honey-soft:#F5E9D2;
+    --rose:#96424A; --rose-soft:#F3DEDE; --slate:#4A5D7E; --slate-soft:#E3E8F1;
+    --font-ui:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',system-ui,sans-serif;
+    --font-serif:ui-serif,Georgia,'Times New Roman',serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:var(--font-ui);background:var(--bg);color:var(--ink);
+    padding:28px 18px 60px;-webkit-font-smoothing:antialiased;line-height:1.5;
+  }
+  main{max-width:560px;margin:0 auto}
+  .eyebrow{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
+  h1{font-family:var(--font-serif);font-weight:500;font-size:26px;margin-top:8px;letter-spacing:-.01em}
+  .lede{font-size:14px;color:var(--ink-soft);margin-top:10px}
+  .card{
+    background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px;margin-top:16px;
+    box-shadow:0 1px 0 rgba(255,255,255,.9) inset, 0 12px 26px -22px rgba(35,40,42,.4);
+  }
+  .card h2{font-size:15px;font-weight:600;margin-bottom:12px}
+  .pill{display:inline-block;font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:20px}
+  .ok{color:var(--spruce);background:var(--mist-soft)}
+  .none{color:var(--rose);background:var(--rose-soft)}
+  .stats{display:flex;gap:8px;margin-top:14px}
+  .stat{flex:1;background:var(--surface-2);border-radius:14px;padding:11px 8px;text-align:center}
+  .stat b{display:block;font-size:21px;font-weight:300;font-variant-numeric:tabular-nums}
+  .stat span{font-size:10.5px;color:var(--ink-soft);letter-spacing:.03em}
+  table{width:100%;border-collapse:collapse;margin-top:6px;font-size:13px}
+  th{text-align:left;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);padding:0 6px 8px 0;font-weight:700}
+  td{padding:9px 6px 9px 0;border-top:1px solid var(--surface-2);vertical-align:top;font-variant-numeric:tabular-nums}
+  td.name{font-weight:600;font-variant-numeric:normal}
+  .tag{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
+  .t-good{color:var(--spruce);background:var(--mist-soft)}
+  .t-bad{color:var(--rose);background:var(--rose-soft)}
+  .t-other{color:var(--slate);background:var(--slate-soft)}
+  textarea{
+    width:100%;height:190px;margin-top:12px;padding:12px;border:1px solid var(--line);border-radius:14px;
+    background:var(--surface-2);color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:11.5px;line-height:1.45;resize:vertical;
+  }
+  .row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+  button,a.btn{
+    flex:1;min-width:130px;padding:14px;border:none;border-radius:14px;font-size:15px;font-weight:600;
+    font-family:inherit;cursor:pointer;text-align:center;text-decoration:none;
+  }
+  .primary{background:var(--spruce);color:#fff}
+  .ghost{background:var(--surface-2);color:var(--ink-soft);border:1px solid var(--line)}
+  .said{font-size:13px;color:var(--spruce);font-weight:600;margin-top:10px;min-height:18px}
+  .note{font-size:12.5px;color:var(--ink-soft);margin-top:14px}
+  .note b{color:var(--ink)}
+  ol{margin:10px 0 0 20px;font-size:13px;color:var(--ink-soft)}
+  ol li{margin-bottom:6px}
+  footer{font-size:12px;color:var(--ink-faint);text-align:center;margin-top:26px;line-height:1.6}
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0C0F10; --surface:#1B2123; --surface-2:#222A2C;
+      --ink:#EAEDEB; --ink-soft:#A8B2AE; --ink-faint:#6C7671; --line:#2A3234;
+      --spruce:#79C6B6; --mist-soft:#20302E; --honey:#E4B45C; --honey-soft:#33291A;
+      --rose:#E0888E; --rose-soft:#3A2426; --slate:#9FB3D1; --slate-soft:#232C38;
+    }
+    .primary{color:#0c1110}
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">Breathe &amp; Count</div>
+  <h1>Your saved data</h1>
+  <p class="lede">This page only <b>reads</b> what is already stored on this device. It changes nothing, saves nothing and sends nothing anywhere.</p>
+
+  <div class="card" id="statusCard">
+    <h2>Status</h2>
+    <div id="status"></div>
+    <div class="stats" id="stats" hidden>
+      <div class="stat"><b id="nCounters">0</b><span>counters</span></div>
+      <div class="stat"><b id="nDays">0</b><span>days recorded</span></div>
+      <div class="stat"><b id="nSize">0</b><span>KB stored</span></div>
+    </div>
+  </div>
+
+  <div class="card" id="listCard" hidden>
+    <h2>What is in there</h2>
+    <table>
+      <thead><tr><th>Name</th><th>Type</th><th>Days</th><th>Total</th><th>First</th><th>Last</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <div class="card" id="copyCard" hidden>
+    <h2>Your copy</h2>
+    <p class="note">Tap <b>Copy all</b>, then paste it somewhere you keep things &mdash; Notes, or a message to yourself. That paste is a complete backup of every counter and every day.</p>
+    <textarea id="dump" readonly spellcheck="false"></textarea>
+    <div class="row">
+      <button class="primary" id="copyBtn" type="button">Copy all</button>
+      <a class="btn ghost" id="dlBtn" download="breathe-and-count-backup.json">Save as a file</a>
+    </div>
+    <div class="said" id="said"></div>
+  </div>
+
+  <div class="card" id="helpCard" hidden>
+    <h2>Nothing found here</h2>
+    <p class="note">That does not mean your counts are gone. This browser simply is not the one holding them. Each of these is a separate storage area on iOS:</p>
+    <ol>
+      <li>Safari, as a normal tab</li>
+      <li>The app opened from an icon on your Home Screen</li>
+      <li>A different browser, or Private Browsing</li>
+      <li>Your laptop</li>
+    </ol>
+    <p class="note">Open this same page from whichever one you actually use to count, and it will show up.</p>
+  </div>
+
+  <div class="card" id="oldCard" hidden>
+    <h2>Earlier automatic backup</h2>
+    <p class="note">An older copy of your data is also stored on this device, kept automatically. Nothing is wrong &mdash; this is just the safety copy.</p>
+    <textarea id="oldDump" readonly spellcheck="false"></textarea>
+  </div>
+
+  <footer>Read-only page &middot; nothing on this page can change or delete your data.</footer>
+</main>
+
+<script>
+(function () {
+  var KEY = 'bc_state', BACKUP = 'bc_state_backup_v1';
+  var el = function (id) { return document.getElementById(id); };
+
+  function readKey(k) {
+    try { return window.localStorage.getItem(k); } catch (e) { return null; }
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (m) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+    });
+  }
+
+  var LABEL = {
+    good: ['Good habit', 't-good'],
+    bad: ['Cutting down', 't-bad'],
+    build: ['Build momentum', 't-other'],
+    avoid: ['Will not do', 't-other']
+  };
+
+  var raw = readKey(KEY);
+
+  if (!raw) {
+    el('status').innerHTML = '<span class="pill none">No data in this browser</span>';
+    el('helpCard').hidden = false;
+  } else {
+    var state = null;
+    try { state = JSON.parse(raw); } catch (e) { state = null; }
+
+    if (!state || !Array.isArray(state.counters)) {
+      el('status').innerHTML = '<span class="pill none">Data found, but unreadable</span>'
+        + '<p class="note">Something is stored under the app’s name, but it is not in the shape the app writes. Copy the text below and send it to me as it is &mdash; do not clear anything.</p>';
+      el('dump').value = raw;
+      el('copyCard').hidden = false;
+    } else {
+      var history = (state.history && typeof state.history === 'object') ? state.history : {};
+      var totalDays = 0, rows = '';
+
+      state.counters.forEach(function (c) {
+        var days = history[c.id] || {};
+        var keys = Object.keys(days).filter(function (k) { return Number(days[k]) > 0; }).sort();
+        var total = keys.reduce(function (a, k) { return a + Number(days[k]); }, 0);
+        totalDays += keys.length;
+        var lab = LABEL[c.kind] || [String(c.kind || '?'), 't-other'];
+        rows += '<tr><td class="name">' + esc(c.name) + '</td>'
+          + '<td><span class="tag ' + lab[1] + '">' + esc(lab[0]) + '</span></td>'
+          + '<td>' + keys.length + '</td>'
+          + '<td>' + total.toLocaleString() + '</td>'
+          + '<td>' + (keys[0] || '—') + '</td>'
+          + '<td>' + (keys[keys.length - 1] || '—') + '</td></tr>';
+      });
+
+      el('status').innerHTML = '<span class="pill ok">Found your data</span>';
+      el('nCounters').textContent = state.counters.length;
+      el('nDays').textContent = totalDays;
+      el('nSize').textContent = (raw.length / 1024).toFixed(1);
+      el('stats').hidden = false;
+      el('rows').innerHTML = rows || '<tr><td colspan="6">No counters yet.</td></tr>';
+      el('listCard').hidden = false;
+      el('dump').value = raw;
+      el('copyCard').hidden = false;
+    }
+
+    try {
+      el('dlBtn').href = 'data:application/json;charset=utf-8,' + encodeURIComponent(raw);
+    } catch (e) {
+      el('dlBtn').hidden = true;
+    }
+  }
+
+  var old = readKey(BACKUP);
+  if (old) {
+    el('oldDump').value = old;
+    el('oldCard').hidden = false;
+  }
+
+  el('copyBtn').addEventListener('click', function () {
+    var ta = el('dump');
+    var done = function () { el('said').textContent = 'Copied. Now paste it somewhere safe.'; };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(ta.value).then(done, function () {
+        ta.focus(); ta.select();
+        el('said').textContent = 'Selected — hold and choose Copy.';
+      });
+    } else {
+      ta.focus(); ta.select();
+      el('said').textContent = 'Selected — hold and choose Copy.';
+    }
+  });
+}());
+</script>
+</body>
+</html>

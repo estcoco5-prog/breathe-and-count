@@ -1,7 +1,8 @@
-const CACHE = 'breathe-count-v1';
+const CACHE = 'breathe-count-v2';
 const ASSETS = [
   './',
   './index.html',
+  './backup.html',
   './css/styles.css',
   './js/app.js',
   './js/logic.js',

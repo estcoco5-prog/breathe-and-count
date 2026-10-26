@@ -1,5 +1,5 @@
 import { PRESETS, roundSeconds, sessionSeconds, scaleForPhase } from './breathing.js';
-import { loadPrefs, savePrefs, unlockAudio, playCue, keepAwake } from './cues.js';
+import { loadPrefs, savePrefs, unlockVoice, stopVoice, playCue, keepAwake } from './cues.js';
 
 const CIRC = 2 * Math.PI * 132;
 
@@ -73,7 +73,7 @@ export function initBreathe() {
     curSteps = (p.id === 'custom' ? customSteps() : p.steps).filter((s) => s[1] > 0);
     if (curSteps.length === 0) return;
     si = 0; paused = false;
-    unlockAudio(); keepAwake(true);
+    unlockVoice(); keepAwake(true);
     document.getElementById('sessName').textContent = p.name === 'Custom' ? 'Custom pattern' : p.name;
     document.getElementById('pauseBtn').textContent = 'Pause';
     const durBtn = document.querySelector('.dur.sel');
@@ -97,7 +97,7 @@ export function initBreathe() {
     clearTimeout(timer); clearInterval(tick);
     circle.style.transition = 'transform .6s ease'; circle.style.transform = 'scale(1)';
     session.classList.remove('on');
-    keepAwake(false);
+    keepAwake(false); stopVoice();
     progFill.style.transition = 'none'; progFill.style.strokeDashoffset = 0;
   }
 

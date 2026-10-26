@@ -22,10 +22,9 @@ export function scaleForPhase(word) {
 }
 
 // What each phase sounds and feels like, so it can be followed eyes-closed.
-// tone: [startHz, endHz] — rising on in, falling on out, flat on hold.
-// pulses: 1 = in, 2 = out, 3 short = hold.
+// say: the words spoken by the Voice cue. pulses: 1 = in, 2 = out, 3 short = hold.
 export function cueForPhase(word) {
-  if (word === 'Breathe in') return { tone: [392, 587], pulses: 1, pattern: [220] };
-  if (word === 'Breathe out') return { tone: [587, 392], pulses: 2, pattern: [160, 120, 160] };
-  return { tone: [494, 494], pulses: 3, pattern: [50, 90, 50, 90, 50] };
+  if (word === 'Breathe in') return { say: 'Breathe in', pulses: 1, pattern: [220] };
+  if (word === 'Breathe out') return { say: 'Breathe out', pulses: 2, pattern: [160, 120, 160] };
+  return { say: 'Hold', pulses: 3, pattern: [50, 90, 50, 90, 50] };
 }

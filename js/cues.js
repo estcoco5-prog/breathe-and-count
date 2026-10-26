@@ -1,40 +1,37 @@
-// Sound + vibration cues for the breathing session, and keeping the screen awake.
+// Voice + vibration cues for the breathing session, and keeping the screen awake.
 // Browser-only; the what-to-play rules live in breathing.js (cueForPhase).
 import { cueForPhase } from './breathing.js';
 
 const PREF_KEY = 'bc_cues';
-let ctx = null, wakeLock = null, hapticLabel = null;
+let wakeLock = null, hapticLabel = null;
 
 export function loadPrefs() {
-  try { return { sound: true, vibrate: true, ...JSON.parse(localStorage.getItem(PREF_KEY) || '{}') }; }
-  catch { return { sound: true, vibrate: true }; }
+  const def = { voice: true, vibrate: true };
+  try { const p = JSON.parse(localStorage.getItem(PREF_KEY) || '{}'); return { voice: p.voice ?? def.voice, vibrate: p.vibrate ?? def.vibrate }; }
+  catch { return def; }
 }
 export function savePrefs(p) {
   try { localStorage.setItem(PREF_KEY, JSON.stringify(p)); } catch { /* private mode: keep in memory only */ }
 }
 
-// iPhone only allows audio that was unlocked by a tap — call this from the Begin button.
-export function unlockAudio() {
+// iPhone only lets a page speak after a tap — call this from the Begin button.
+export function unlockVoice() {
   try {
-    // 'playback' lets the chime play even with the silent switch on (iOS 17+).
-    if (navigator.audioSession) navigator.audioSession.type = 'playback';
-    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
-    if (ctx.state !== 'running') ctx.resume();
-  } catch { ctx = null; }
+    const u = new SpeechSynthesisUtterance(' ');
+    u.volume = 0; speechSynthesis.speak(u);
+  } catch { /* no speech on this browser */ }
 }
 
-function chime([f0, f1]) {
-  if (!ctx) return;
-  const t = ctx.currentTime, osc = ctx.createOscillator(), g = ctx.createGain();
-  osc.type = 'sine';
-  osc.frequency.setValueAtTime(f0, t);
-  osc.frequency.linearRampToValueAtTime(f1, t + 0.5);
-  g.gain.setValueAtTime(0.0001, t);
-  g.gain.exponentialRampToValueAtTime(0.35, t + 0.04);
-  g.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
-  osc.connect(g).connect(ctx.destination);
-  osc.start(t); osc.stop(t + 0.95);
+function speak(text) {
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US'; u.rate = 0.85; u.pitch = 0.95;
+    speechSynthesis.speak(u);
+  } catch { /* no speech on this browser */ }
 }
+
+export function stopVoice() { try { speechSynthesis.cancel(); } catch { /* none */ } }
 
 // iPhone Safari has no navigator.vibrate. Since iOS 18, toggling a native
 // <input switch> gives a small system tap — that is the only haptic a web app gets.
@@ -58,7 +55,7 @@ function buzz(cue) {
 
 export function playCue(word, prefs) {
   const cue = cueForPhase(word);
-  if (prefs.sound) chime(cue.tone);
+  if (prefs.voice) speak(cue.say);
   if (prefs.vibrate) buzz(cue);
 }
 

@@ -26,11 +26,9 @@ test('scaleForPhase grows on in, shrinks on out, holds on hold', () => {
   assert.equal(scaleForPhase('Hold'), null);
 });
 
-test('cueForPhase: rising tone + 1 pulse in, falling + 2 out, flat + 3 on hold', () => {
+test('cueForPhase: says the phase, 1 pulse in, 2 out, 3 on hold', () => {
   const i = cueForPhase('Breathe in'), o = cueForPhase('Breathe out'), h = cueForPhase('Hold');
-  assert.ok(i.tone[1] > i.tone[0]);
-  assert.ok(o.tone[1] < o.tone[0]);
-  assert.equal(h.tone[0], h.tone[1]);
+  assert.deepEqual([i.say, o.say, h.say], ['Breathe in', 'Breathe out', 'Hold']);
   assert.deepEqual([i.pulses, o.pulses, h.pulses], [1, 2, 3]);
   // vibrate patterns alternate buzz/gap, so buzz count = pulses
   for (const c of [i, o, h]) assert.equal(Math.ceil(c.pattern.length / 2), c.pulses);

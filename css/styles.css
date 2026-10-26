@@ -209,16 +209,17 @@ body{
 .prog-track{stroke:color-mix(in srgb,var(--mist) 22%,transparent)}
 .prog-fill{stroke:var(--mist);stroke-linecap:round;transition:stroke-dashoffset 1s linear}
 .circle{
-  width:120px;height:120px;border-radius:50%;
+  width:120px;height:120px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   background:radial-gradient(circle at 40% 35%, color-mix(in srgb,var(--mist) 85%, #fff) 0%, var(--spruce) 90%);
   box-shadow:0 0 60px -6px color-mix(in srgb,var(--mist) 60%,transparent);
   transform:scale(1);will-change:transform;
 }
-.phase{position:absolute;text-align:center;color:#fff;pointer-events:none}
-:root[data-theme="light"] .phase{color:#0e2b27}
-@media(prefers-color-scheme:light){.phase{color:#0e2b27}}
-.phase .pw{font-size:22px;font-weight:600;letter-spacing:.02em}
-.phase .pc{font-size:14px;opacity:.8;margin-top:2px;font-variant-numeric:tabular-nums}
+/* the number sits inside the circle, so it grows and shrinks with the breath */
+.circle .pc{font-size:58px;font-weight:300;line-height:1;color:#fff;font-variant-numeric:tabular-nums;text-shadow:0 1px 8px rgba(0,0,0,.22)}
+:root[data-theme="dark"] .circle .pc{color:#0e2b27;text-shadow:none}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .circle .pc{color:#0e2b27;text-shadow:none}}
+.session .pw{font-size:30px;font-weight:600;letter-spacing:.02em;color:var(--ink);margin-bottom:22px;text-align:center}
+.cue-hint{font-size:12px;color:var(--ink-faint);margin-top:8px;line-height:1.4}
 .sess-meta{margin-top:52px;text-align:center}
 .sess-meta .nm{font-family:var(--font-serif);font-style:italic;font-size:20px;color:var(--ink)}
 .sess-meta .tm{font-size:14px;color:var(--ink-soft);margin-top:4px;font-variant-numeric:tabular-nums}

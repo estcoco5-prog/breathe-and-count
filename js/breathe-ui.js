@@ -1,4 +1,5 @@
 import { PRESETS, roundSeconds, sessionSeconds, scaleForPhase } from './breathing.js';
+import { loadPrefs, savePrefs, unlockAudio, playCue, keepAwake } from './cues.js';
 
 const CIRC = 2 * Math.PI * 132;
 
@@ -27,6 +28,13 @@ export function initBreathe() {
     d.classList.add('sel');
   });
 
+  const prefs = loadPrefs();
+  document.querySelectorAll('.cue').forEach((b) => {
+    const paint = () => { b.classList.toggle('sel', prefs[b.dataset.cue]); b.setAttribute('aria-pressed', prefs[b.dataset.cue]); };
+    paint();
+    b.addEventListener('click', () => { prefs[b.dataset.cue] = !prefs[b.dataset.cue]; savePrefs(prefs); paint(); });
+  });
+
   const session = document.getElementById('session');
   const circle = document.getElementById('circle');
   const phaseWord = document.getElementById('phaseWord');
@@ -53,6 +61,7 @@ export function initBreathe() {
     const [word, secs] = curSteps[si];
     if (secs <= 0) { si++; return runStep(); }
     phaseWord.textContent = word; secLeft = secs; phaseCount.textContent = secs;
+    playCue(word, prefs);
     const target = scaleForPhase(word);
     if (target !== null) { circle.style.transition = `transform ${secs}s cubic-bezier(.4,0,.4,1)`; circle.style.transform = `scale(${target})`; }
     else { circle.style.transition = 'transform .3s ease'; }
@@ -64,6 +73,7 @@ export function initBreathe() {
     curSteps = (p.id === 'custom' ? customSteps() : p.steps).filter((s) => s[1] > 0);
     if (curSteps.length === 0) return;
     si = 0; paused = false;
+    unlockAudio(); keepAwake(true);
     document.getElementById('sessName').textContent = p.name === 'Custom' ? 'Custom pattern' : p.name;
     document.getElementById('pauseBtn').textContent = 'Pause';
     const durBtn = document.querySelector('.dur.sel');
@@ -87,6 +97,7 @@ export function initBreathe() {
     clearTimeout(timer); clearInterval(tick);
     circle.style.transition = 'transform .6s ease'; circle.style.transform = 'scale(1)';
     session.classList.remove('on');
+    keepAwake(false);
     progFill.style.transition = 'none'; progFill.style.strokeDashoffset = 0;
   }
 
@@ -96,5 +107,10 @@ export function initBreathe() {
     paused = !paused; this.textContent = paused ? 'Resume' : 'Pause';
     if (paused) { clearTimeout(timer); const cs = getComputedStyle(circle).transform; circle.style.transition = 'none'; circle.style.transform = cs; }
     else runStep();
+  });
+
+  // the screen lock is dropped whenever the app goes to the background; take it back
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && session.classList.contains('on')) keepAwake(true);
   });
 }

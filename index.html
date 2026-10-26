@@ -98,15 +98,21 @@
         <button class="dur" data-min="10">10 min</button>
         <button class="dur" data-rounds="6">6 rounds</button>
       </div>
+      <div class="section-label">Cues</div>
+      <div class="dur-row" id="cueRow">
+        <button class="dur cue" data-cue="sound" aria-pressed="true">Sound</button>
+        <button class="dur cue" data-cue="vibrate" aria-pressed="true">Vibrate</button>
+      </div>
+      <div class="cue-hint">Rising chime + 1 tap = breathe in · falling chime + 2 taps = breathe out · 3 taps = hold</div>
       <button class="start" id="startBtn">Begin breathing</button>
     </section>
 
     <!-- SESSION -->
     <div class="session" id="session">
+      <div class="pw" id="phaseWord">Breathe in</div>
       <div class="breathe-wrap">
         <svg class="prog" viewBox="0 0 280 280"><circle class="prog-track" cx="140" cy="140" r="132"></circle><circle class="prog-fill" id="progFill" cx="140" cy="140" r="132"></circle></svg>
-        <div class="circle" id="circle"></div>
-        <div class="phase"><div class="pw" id="phaseWord">Breathe in</div><div class="pc" id="phaseCount">4</div></div>
+        <div class="circle" id="circle"><span class="pc" id="phaseCount">4</span></div>
       </div>
       <div class="sess-meta">
         <div class="nm" id="sessName">Box breathing</div>
